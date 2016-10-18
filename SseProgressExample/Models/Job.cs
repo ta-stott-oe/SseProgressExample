@@ -29,12 +29,14 @@ namespace SseProgressExample.Models
             this.task = Task.Run(() =>
             {
                 this.Result = doWork(progressListener);
+                this.Completed?.Invoke(this, EventArgs.Empty);
             });
         }
 
         public TResult Result { get; private set; }
 
         public event EventHandler<TProgress> ProgressUpdated;
+        public event EventHandler Completed;
 
         public async Task WaitUntilComplete()
         {

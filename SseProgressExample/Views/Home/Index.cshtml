@@ -4,10 +4,18 @@
 
 <script type="text/javascript">
     function DoJob() {
+
+        var container = $("#results");
+        container.html("");
+
         Job.DoJob()
             .then(function(result){
-                $("#results").html(JSON.stringify(result));
-            });
+                container.append($("<h1></h1>").html(JSON.stringify(result)));
+            })
+           .progress(function (data) {
+               container.append($("<p></p>").html(JSON.stringify(data)));
+           })
+            
     }
 </script>
 

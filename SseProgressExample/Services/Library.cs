@@ -12,7 +12,7 @@ namespace SseProgressExample.Services
         {
             for(var i = 0; i < 10; i++)
             {
-                progressHelper.Report(new SomeProgress(i / 10, $"Doing Step {i + 1} of 10"));
+                progressHelper.Report(new SomeProgress(i / 10m, $"Doing Step {i + 1} of 10"));
                 Thread.Sleep(500);
             }
 
