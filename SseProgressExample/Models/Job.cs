@@ -6,6 +6,12 @@ using System.Web;
 
 namespace SseProgressExample.Models
 {
+    /// <summary>
+    /// Represents some long-running task that returns a TResult and emits
+    /// progress messages of type TProgress
+    /// </summary>
+    /// <typeparam name="TResult"></typeparam>
+    /// <typeparam name="TProgress"></typeparam>
     public class Job<TResult, TProgress>
     {
         public readonly string Id;
@@ -21,11 +27,14 @@ namespace SseProgressExample.Models
 
         public void Start()
         {
+            // Forward progress events to event handler
             var progressListener = new Progress<TProgress>(progress =>
             {
                 this.ProgressUpdated?.Invoke(this, progress);
             });
 
+            // Start doing the work and set the result property when finished
+            // Should also handle errors here
             this.task = Task.Run(() =>
             {
                 this.Result = doWork(progressListener);
@@ -38,6 +47,10 @@ namespace SseProgressExample.Models
         public event EventHandler<TProgress> ProgressUpdated;
         public event EventHandler Completed;
 
+        /// <summary>
+        /// Asynchronously wait until the job is complete.
+        /// </summary>
+        /// <returns></returns>
         public async Task WaitUntilComplete()
         {
             if (this.task == null)

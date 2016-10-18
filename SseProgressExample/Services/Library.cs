@@ -6,13 +6,22 @@ using System.Web;
 
 namespace SseProgressExample.Services
 {
+    /// <summary>
+    /// This is the library class which does something that takes a while.
+    /// </summary>
     public class Library
     {
-        public static SomeResult DoLongRunningThing(SomeParameters parameters, IProgress<SomeProgress> progressHelper)
+        /// <summary>
+        /// Takes some parameters and a progress listener and returns a result synchronously.
+        /// </summary>
+        /// <param name="parameters"></param>
+        /// <param name="progressListener"></param>
+        /// <returns></returns>
+        public static SomeResult DoLongRunningThing(SomeParameters parameters, IProgress<SomeProgress> progressListener)
         {
             for(var i = 0; i < 10; i++)
             {
-                progressHelper.Report(new SomeProgress(i / 10m, $"Doing Step {i + 1} of 10"));
+                progressListener.Report(new SomeProgress(i / 10m, $"Doing Step {i + 1} of 10"));
                 Thread.Sleep(500);
             }
 

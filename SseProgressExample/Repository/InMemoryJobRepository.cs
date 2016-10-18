@@ -6,6 +6,11 @@ using SseProgressExample.Models;
 
 namespace SseProgressExample.Repository
 {
+    /// <summary>
+    /// Simple implementation which stores jobs in a dictionary.
+    /// </summary>
+    /// <typeparam name="TResult"></typeparam>
+    /// <typeparam name="TProgress"></typeparam>
     public class InMemoryJobRepository<TResult, TProgress> : IJobRepository<TResult, TProgress>
     {
         private IDictionary<string, Job<TResult, TProgress>> jobs;
