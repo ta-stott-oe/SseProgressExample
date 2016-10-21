@@ -35,6 +35,7 @@ namespace SseProgressExample.Controllers
         [Route("")]
         public HttpResponseMessage Put(SomeParameters parameters)
         {
+            // var job = this.service.DoJobAsync(parameters);
             var job = this.service.DoJob(parameters);
             return Request.CreateResponse(job.Id);
         }

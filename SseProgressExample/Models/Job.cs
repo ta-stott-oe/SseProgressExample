@@ -17,9 +17,15 @@ namespace SseProgressExample.Models
         public readonly string Id;
 
         private Task task;
-        private readonly Func<IProgress<TProgress>, TResult> doWork;
+        private readonly Func<IProgress<TProgress>, Task<TResult>> doWork;
 
         public Job(string id, Func<IProgress<TProgress>, TResult> doWork)
+        {
+            this.Id = id;
+            this.doWork = progressListener => Task.Run(() => doWork(progressListener));
+        }
+
+        public Job(string id, Func<IProgress<TProgress>, Task<TResult>> doWork)
         {
             this.Id = id;
             this.doWork = doWork;
@@ -35,11 +41,12 @@ namespace SseProgressExample.Models
 
             // Start doing the work and set the result property when finished
             // Should also handle errors here
-            this.task = Task.Run(() =>
-            {
-                this.Result = doWork(progressListener);
-                this.Completed?.Invoke(this, EventArgs.Empty);
-            });
+            this.task = doWork(progressListener)
+                .ContinueWith(result =>
+                {
+                    this.Result = result.Result;
+                    this.Completed?.Invoke(this, EventArgs.Empty);
+                });
         }
 
         public TResult Result { get; private set; }

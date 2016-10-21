@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Web;
 
 namespace SseProgressExample.Services
@@ -26,7 +27,25 @@ namespace SseProgressExample.Services
             }
 
             return new SomeResult($"{parameters.Foo} has been foobarred");
-        } 
+        }
+
+        /// <summary>
+        /// Takes some parameters and a progress listener and returns a result asynchronously.
+        /// </summary>
+        /// <param name="parameters"></param>
+        /// <param name="progressListener"></param>
+        /// <returns></returns>
+        public static async Task<SomeResult> DoLongRunningThingAsync(SomeParameters parameters, IProgress<SomeProgress> progressListener)
+        {
+            for (var i = 0; i < 10; i++)
+            {
+                await Task.Run(() => Thread.Sleep(2000));
+                progressListener.Report(new SomeProgress(i / 10m, $"Doing Step {i + 1} of 10"));
+                
+            }
+
+            return new SomeResult($"{parameters.Foo} has been foobarred");
+        }
     }
 
     public class SomeParameters
